@@ -2,3 +2,4 @@
 const todoBaseUri = "http://192.168.0.22:80";
 const endPointSignIn = "/user/sign-in";
 const endPointSignUp = "/user/sign-up";
+const endPointTodoAll = '/todos/all';
