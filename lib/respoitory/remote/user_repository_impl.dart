@@ -27,18 +27,36 @@ class UserRepositoryImpl extends UserRepository {
       String token = "";
       if (headers.startsWith("Bearer ")) {
         token = headers.substring(7);
+
+        // dio.options.headers["Authorization"] = "Bearer $token"; // 전역 헤더 설정
       }
       ResponseDto responseDto = ResponseDto.fromJson(response.data);
       responseDto.token = token;
+      responseDto.code = 1;
+      responseDto.message = "로그인 성공";
+
       return responseDto;
     } catch (e) {
-      return ResponseDto(code: -1, message: '서버 오류', data: '', token: '');
+      return ResponseDto(code: -1, message: '로그인 실패', data: '', token: '');
     }
   }
 
   @override
-  Future<Response> requestSignUp({required User user}) {
-    // TODO: implement requestSignUp
-    throw UnimplementedError();
+  Future<ResponseDto> requestSignUp({required User user}) async {
+    try {
+      print(" user.toJson() : ${user.toJson()}");
+      // dio 가 object type 으로 넣으면  알아서 json 형식 으로 변경 처리 해 준다.
+      Response response = await dio.post(endPointSignUp, data: user);
+      print("response : ${response.data.toString()}");
+      ResponseDto responseDto = ResponseDto.fromJson(response.data);
+      responseDto.code = 1;
+      responseDto.message = '회원 가입 완료';
+
+      print("repo signUp : ${responseDto.toString()}");
+      return responseDto;
+    } catch (e) {
+      print("e : ${e.toString()}");
+      return ResponseDto(code: -1, message: '회원 가입 실패', data: '', token: '');
+    }
   }
 }
